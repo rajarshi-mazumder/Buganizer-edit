@@ -6,10 +6,9 @@ import 'package:buganizer/screens/assignedBugs.dart';
 import 'package:buganizer/screens/createdBugs.dart';
 
 class bgz_drawer extends StatelessWidget {
-  bgz_drawer({
-    super.key,
-  });
+  bgz_drawer({super.key, this.userInfo});
   User? user = FirebaseAuth.instance.currentUser;
+  var userInfo;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -23,10 +22,9 @@ class bgz_drawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.account_circle,
-                  size: 64.0,
-                  color: Colors.white,
+                CircleAvatar(
+                  backgroundImage: NetworkImage(userInfo['profilePic'] ??
+                      "https://i.stack.imgur.com/l60Hf.png"),
                 ),
                 SizedBox(height: 8.0),
                 Text(

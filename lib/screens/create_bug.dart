@@ -242,24 +242,31 @@ class _BugCreationState extends State<BugCreation> {
                             ),
                             Expanded(
                               child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: TextFormField(
+                                child: DropdownButtonFormField<String>(
+                                  // value: _component,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _component = value!;
+                                    });
+                                  },
+                                  items: componentOpts.map((option) {
+                                    return DropdownMenuItem(
+                                      value: option,
+                                      child: Text(option),
+                                    );
+                                  }).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Component',
+                                    //border: OutlineInputBorder(),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'This is mandatory';
+                                      return 'Select one option';
                                     }
                                     return null;
-                                  },
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _component = value;
-                                    });
                                   },
                                 ),
                               ),

@@ -36,6 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           'assignedBugs': [],
           'createdBugs': [],
           'notifications': [],
+          'profilePic': "none"
         });
 
         // Registration successful

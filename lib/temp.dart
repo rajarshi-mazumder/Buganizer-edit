@@ -1,155 +1,94 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'screens/appBar.dart';
+import 'main.dart';
 
-class DashboardApp extends StatelessWidget {
+class ImageUploader extends StatefulWidget {
+  String? uploadedImgURL = "";
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dashboard App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: DashboardScreen(),
-    );
-  }
+  _ImageUploaderState createState() => _ImageUploaderState();
 }
 
-class DashboardScreen extends StatefulWidget {
-  @override
-  _DashboardScreenState createState() => _DashboardScreenState();
-}
+class _ImageUploaderState extends State<ImageUploader> {
+  File? _image;
+  final picker = ImagePicker();
+  Reference _storageReference = FirebaseStorage.instance.ref().child('images');
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  List<Map<String, dynamic>> tasks = [
-    {
-      'id': 1,
-      'priority': 'High',
-      'type': 'Bug',
-      'title': 'Fix login issue',
-      'Reporter': 'John',
-      'status': 'In Progress',
-      'lastModified': '2023-08-20',
-      'details': 'This is a critical issue that needs to be fixed...',
-    },
-    {
-      'id': 2,
-      'priority': 'Medium',
-      'type': 'Feature',
-      'title': 'Add user profile page',
-      'Reporter': 'Jane',
-      'status': 'Open',
-      'lastModified': '2023-08-19',
-      'details': 'Add a user profile page with user information...',
-    },
-    // Add more tasks here...
-  ];
+  User? user = FirebaseAuth.instance.currentUser;
 
-  void _showTaskDetails(int taskId) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        final task = tasks.firstWhere((task) => task['id'] == taskId);
-        return AlertDialog(
-          title: Text(task['title']),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildDetailRow(
-                  Icons.priority_high,
-                  'Priority',
-                  task['priority'],
-                ),
-                buildDetailRow(
-                  Icons.bug_report,
-                  'Type',
-                  task['type'],
-                ),
-                buildDetailRow(
-                  Icons.check_circle,
-                  'Status',
-                  task['status'],
-                ),
-                buildDetailRow(
-                  Icons.person,
-                  'Reporter',
-                  task['Reporter'],
-                ),
-                buildDetailRow(
-                  Icons.calendar_today,
-                  'Last Modified',
-                  task['lastModified'],
-                ),
-                SizedBox(height: 16),
-                Text('Details:', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(task['details']),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
-  Widget buildDetailRow(IconData icon, String title, String subtitle) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon),
-          SizedBox(width: 8),
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(width: 4),
-          Text(subtitle),
-        ],
-      ),
-    );
+  Future uploadImage() async {
+    if (_image == null) {
+      // Handle the case when no image is selected
+      return;
+    }
+
+    UploadTask uploadTask =
+        _storageReference.child(user!.email!).putFile(_image!);
+
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadURL = await taskSnapshot.ref.getDownloadURL();
+
+    // Here you can use the `downloadURL` for further processing
+    setState(() {
+      widget.uploadedImgURL = downloadURL;
+    });
+    setUserProfileImage();
+    print("Download URL: $downloadURL");
+  }
+
+  setUserProfileImage() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user?.email)
+        .update({'profilePic': widget.uploadedImgURL});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Issues assigned to me'),
+      appBar: AppBarNav(
+        goToHomePage: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePageWidget(
+                      user: user,
+                    )),
+          );
+        },
       ),
       body: Column(
-        children: tasks.map((task) {
-          return Card(
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text('${task['title']}'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Priority: ${task['priority']}'),
-                  Text('Type: ${task['type']}'),
-                  Text('Status: ${task['status']}'),
-                  Text('Reporter: ${task['Reporter']}'),
-                  Text('Last Modified: ${task['lastModified']}'),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showTaskDetails(task['id']);
-                    },
-                    child: Text('Details'),
-                  ),
-                ],
-              ),
-              minVerticalPadding: 20,
-              trailing: Container(
-                height: 120, // Adjust the height as needed
-                child:
-                    SizedBox(), // Leave this empty since the button is now in the subtitle
-              ),
-            ),
-          );
-        }).toList(),
+        children: [
+          _image != null
+              ? Image.file(_image!)
+              : Expanded(
+                  child:
+                      Placeholder(child: Image.network(widget.uploadedImgURL!)),
+                ), // Display the selected image or a placeholder
+          ElevatedButton(
+            onPressed: getImage,
+            child: Text("Select Image"),
+          ),
+          ElevatedButton(
+            onPressed: uploadImage,
+            child: Text("Upload Image"),
+          ),
+        ],
       ),
     );
   }

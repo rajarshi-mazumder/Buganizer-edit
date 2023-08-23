@@ -28,8 +28,8 @@ enum BugType { none, featureRequest, ProductBreakingBug }
 
 List<String> priorityOpts = ['P0', 'P1', 'P2', 'P3', 'P4'];
 List<String> bugTypeOpts = [
-  'None'
-      'Bug',
+  'None',
+  'Bug',
   'Feature Request',
   'Process',
   'Vulnerability',
@@ -49,3 +49,5 @@ List<String> bugStatusOpts = [
   'not reproducible',
   'obsolete'
 ];
+
+List<String> componentOpts = ['Gmail', 'GMeet', 'GChat', 'GCalendar'];

@@ -5,6 +5,7 @@ class CustomUser {
   List? assignedBugs = [];
   List? createdBugs = [];
   List? notifications = [];
+
   CustomUser({
     required this.id,
     required this.username,

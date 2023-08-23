@@ -29,11 +29,7 @@ class MyApp extends StatelessWidget {
         // Set your desired text direction here
         textDirection: TextDirection.ltr, // Or TextDirection.rtl
         child: Scaffold(
-          body: user != null
-              ? HomePageWidget(
-                  user: user,
-                )
-              : LoginScreen(),
+          body: user != null ? ImageUploader() : LoginScreen(),
         ),
       ),
     );
@@ -43,6 +39,7 @@ class MyApp extends StatelessWidget {
 class HomePageWidget extends StatefulWidget {
   HomePageWidget({Key? key, this.user}) : super(key: key);
   User? user = FirebaseAuth.instance.currentUser;
+  var userInfo;
   @override
   _HomePageWidgetState createState() => _HomePageWidgetState();
 }
@@ -58,7 +55,15 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             .collection('users')
             .doc(widget.user?.email)
             .get();
-
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user?.email)
+        .get()
+        .then((value) {
+      setState(() {
+        widget.userInfo = value;
+      });
+    });
     // if (userSnapshot.exists) {
     //   print("User snapshot ${userSnapshot['username']}");
     // }
@@ -85,7 +90,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       // onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
       child: Scaffold(
         key: scaffoldKey,
-        drawer: bgz_drawer(),
+        drawer: bgz_drawer(userInfo: widget.userInfo),
         appBar: AppBarNav(
           goToHomePage: () {
             Navigator.push(
