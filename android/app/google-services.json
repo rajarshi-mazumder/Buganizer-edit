@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "419179972597",
+    "project_id": "pvp-buganizer",
+    "storage_bucket": "pvp-buganizer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419179972597:android:057e24fa7f2b3b3d1b42bc",
+        "android_client_info": {
+          "package_name": "com.example.pvp_buganizer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "419179972597-30c74i4iv8a9fcjj7d1uef6meo6re686.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUEkOH15ltnGjjq4xcCe-oKEJ5l72jncI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "419179972597-30c74i4iv8a9fcjj7d1uef6meo6re686.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

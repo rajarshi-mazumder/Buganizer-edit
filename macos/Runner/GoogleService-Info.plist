@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>419179972597-1d9keggcjdk4c7udtqgjo3k669voe6fs.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.419179972597-1d9keggcjdk4c7udtqgjo3k669voe6fs</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB-EBjgoseFmewM4wYfwIiYCxA8SksyGQE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>419179972597</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.pvpBuganizer.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>pvp-buganizer</string>
+	<key>STORAGE_BUCKET</key>
+	<string>pvp-buganizer.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:419179972597:ios:402c8b0923bc87cf1b42bc</string>
+</dict>
+</plist>
